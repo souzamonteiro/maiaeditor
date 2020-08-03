@@ -38,15 +38,15 @@ http://www.maiascript.com
 Load the MaiaEditor library:
 
 `<script src="js/prism.js"></script>`
+
 `<script src="js/maiaeditor.js"></script>`
 
 To use MaiaEditor, insert a div in your document and assign an id to it.
 Then initialize the div using the MaiaEditor class constructor:
 
-<div id="editor" class='editor'></div>
-<script>
-    var editor = new MaiaEditor('editor', 'javascript');
-</script>
+`<div id="editor" class='editor'></div>`
+
+`<script>var editor = new MaiaEditor('editor', 'javascript');</script>`
 
 Thats all!
 
