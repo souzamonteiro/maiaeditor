@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>MaiaEditor - The MaiaStudio Code Editor</title>
+        <link rel="stylesheet" href="../themes/prism.css">
+        <script src="../js/components/prism-core.js"></script>
+        <script src="../js/components.js"></script>
+        <script src="../js/components/prism-clike.js"></script>
+        <script src="../js/components/prism-maiascript.js"></script>
+        <script src="../js/components/prism-javascript.js"></script>
+        <script src="../js/maiaeditor.js"></script>
+        <style>
+            .editor {
+                height: 480px;
+                color: gray;
+                font-family: "Courier";
+                font-size: 14px;
+                letter-spacing: normal;
+                tab-size: 4;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="editor" class='editor'>function f(x) {return(x)}</div>
+        <script>
+            var editor = new MaiaEditor('editor', 'maiascript');
+        </script>
+    </body>
+</html>

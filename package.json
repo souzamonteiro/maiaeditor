@@ -1,0 +1,33 @@
+{
+    "name": "maiaeditor",
+    "version": "1.0.0",
+    "description": "MaiaEditor (The MaiaStudio Editor)\n\nMaiaScript is a programming language aimed at developing adaptable and intelligent applications.",
+    "keywords": [
+      "maia",
+      "maiascript",
+      "javascript",
+      "editor",
+      "syntax highlight"
+    ],
+    "author": "The MaiaScript Team (https://www.maiascript.com)",
+    "license": "Apache-2.0",
+    "homepage": "https://www.maiascript.com",
+    "bugs": {
+      "url": "https://github.com/souzamonteiro/maiaeditor/issues"
+    },
+    "main": "",
+    "bin": {
+      "maiascript": ""
+    },
+    "scripts": {
+      "build": "./build.sh"
+    },
+    "directories": {
+      "example": "examples"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/souzamonteiro/maiaeditor.git"
+    }
+  }
+  

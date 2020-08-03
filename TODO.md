@@ -1,0 +1,5 @@
+- [x] Implement Line Numbers Bar
+- [x] Implement Undo and Redo
+- [ ] Implement Copy, Cut and Past
+- [ ] Implement indentation
+- [ ] Implement Toggle Line Comment
