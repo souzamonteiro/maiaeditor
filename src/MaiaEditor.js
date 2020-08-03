@@ -53,9 +53,9 @@ function MaiaEditor(container, language) {
     editorContainer.appendChild(editor);
 
     // Set scrollbars.
-    editorContainer.style.overflowX = 'scroll';
-    editorContainer.style.overflowY = 'scroll';
-    editorContainer.style.resize = 'vertical';
+    //editorContainer.style.overflowX = 'hidden';
+    //editorContainer.style.overflowY = 'hidden';
+    //editorContainer.style.resize = 'none';
     
     // Place the line number bar to the left of the editor.
     lineNumbers.style.setProperty('mix-blend-mode', 'difference');
@@ -87,7 +87,7 @@ function MaiaEditor(container, language) {
      * Gets the editor's text.
      * @return {string}  The text in the editor.
      */
-    function getText(text) {
+    this.getText = function(text) {
         return editor.textContent;
     }
 
@@ -96,9 +96,9 @@ function MaiaEditor(container, language) {
      * @param {string}  text - Text to be set in the editor.
      * @return          The text in the editor is set.
      */
-    function setText(text) {
+    this.setText = function(text) {
         editor.textContent = text;
-        highlightCode(editor);
+        this.highlightCode(editor);
     }
     
     /**
@@ -106,7 +106,7 @@ function MaiaEditor(container, language) {
      * @param {object}   element - Element where the cursor position will be obtained.
      * @return {object}  The current position of the cursor.
      */
-    function getCursorPosition(element) {
+    this.getCursorPosition = function(element) {
         var cursorOffset = 0;
         var doc = element.ownerDocument || element.document;
         var win = doc.defaultView || doc.parentWindow;
@@ -136,7 +136,7 @@ function MaiaEditor(container, language) {
      * @param {object}  offset - The cursor position.
      * @return          The current position of the cursor is set.
      */
-    function setCursorPosition(element, offset) {
+    this.setCursorPosition = function(element, offset) {
         var range = document.createRange();
         var sel = window.getSelection();
         // Select appropriate node.
@@ -176,15 +176,15 @@ function MaiaEditor(container, language) {
      * @param {object}  element - Element to highlight code.
      * @return          The content of the editor is Highlighted.
      */
-    function highlightCode(element) {
+    this.highlightCode = function(element) {
         // Gets the code in the editor.
         var code = element.textContent || '';
         // Saves the cursor position.
-        var position = getCursorPosition(element);
+        var position = this.getCursorPosition(element);
         // Highlights the code syntax in the editor.
         element.innerHTML = Prism.highlight(code, Prism.languages[language], language);
         // Restores the cursor position.
-        setCursorPosition(element, position);
+        this.setCursorPosition(element, position);
         // Displays line numbers.
         var numberOfLines = code.split(/\r\n|\r|\n/).length + (code.endsWith('\r') || code.endsWith('\n') ? 0 : 1);
         var text = '';
@@ -199,7 +199,7 @@ function MaiaEditor(container, language) {
      * @param {object}  element - Element to save content.
      * @return          The current content of the editor is saved.
      */
-    function saveEditorContent(element) {
+    this.saveEditorContent = function(element) {
         // Place the previous contents on the stack.
         editorHistory.push(element.textContent);
     }
@@ -209,7 +209,7 @@ function MaiaEditor(container, language) {
      * @param {object}  element - Element to restore content.
      * @return          The editor's previous content is restored.
      */
-    function restoreEditorContent(element) {
+    this.restoreEditorContent = function(element) {
         // Removes the previous contents from the stack.
         var lastContent = editorHistory.pop();
         // Place the previous contents on the backup stack.
@@ -217,7 +217,7 @@ function MaiaEditor(container, language) {
         // Restores the content.
         element.textContent = lastContent ? lastContent : element.textContent;
         // Highlights the code syntax in the editor.
-        highlightCode(element);
+        this.highlightCode(element);
     }
 
     /**
@@ -225,7 +225,7 @@ function MaiaEditor(container, language) {
      * @param {object}  element - Element to restore content.
      * @return          The editor's previous content is restored.
      */
-    function undoRestoreEditorContent(element) {
+    this.undoRestoreEditorContent = function(element) {
         // Removes the previous contents from the backup stack.
         var lastContent = editorHistoryBackup.pop();
         // Place the previous contents on the stack.
@@ -233,14 +233,14 @@ function MaiaEditor(container, language) {
         // Restores the content.
         element.textContent = lastContent ? lastContent : element.textContent;
         // Highlights the code syntax in the editor.
-        highlightCode(element);
+        this.highlightCode(element);
     }
 
     /**
      * Returns the selected text.
      * @return {string}  The selected text.
      */
-    function getSelectedText() {
+    this.getSelectedText = function() {
         var res;
         if (window.getSelection) {
             res = window.getSelection().toString();
@@ -253,7 +253,7 @@ function MaiaEditor(container, language) {
      * @param {string}  text - Text provided.
      * @return          The selected text replaced.
      */
-    function replaceSelectedText(text) {
+    this.replaceSelectedText = function(text) {
         var sel, range;
         if (window.getSelection) {
             sel = window.getSelection();
@@ -273,8 +273,8 @@ function MaiaEditor(container, language) {
      * @param {string}  element - Element where the text will be indented.
      * @return          The selected text indented.
      */
-    function indentSelection(element) {
-        var text = getSelectedText();
+    this.indentSelection = function(element) {
+        var text = this.getSelectedText();
         if (typeof text == 'string') {
             var textLines = text.split(/\r\n|\r|\n/);
             var newText = '';
@@ -282,9 +282,9 @@ function MaiaEditor(container, language) {
                 for (var i = 0; i < textLines.length; i++) {
                     newText += '    ' + textLines[i] + (i < textLines.length - 1 ? '\r\n' : '');
                 }
-                replaceSelectedText(newText);
+                this.replaceSelectedText(newText);
             }
-            highlightCode(element);
+            this.highlightCode(element);
         }
     }
 
@@ -293,8 +293,8 @@ function MaiaEditor(container, language) {
      * @param {string}  element - Element where the text will be unindented.
      * @return          The selected text unindented.
      */
-    function unindentSelection(element) {
-        var text = getSelectedText();
+    this.unindentSelection = function(element) {
+        var text = this.getSelectedText();
         if (typeof text == 'string') {
             var textLines = text.split(/\r\n|\r|\n/);
             var newText = '';
@@ -302,9 +302,9 @@ function MaiaEditor(container, language) {
                 for (var i = 0; i < textLines.length; i++) {
                     newText += textLines[i].replace('    ', '') + (i < textLines.length - 1 ? '\r\n' : '');
                 }
-                replaceSelectedText(newText);
+                this.replaceSelectedText(newText);
             }
-            highlightCode(element);
+            this.highlightCode(element);
         }
     }
 
@@ -313,8 +313,8 @@ function MaiaEditor(container, language) {
      * @param {string}  element - Element where the text will be commented.
      * @return          The selected text commented.
      */
-    function commentSelection(element) {
-        var text = getSelectedText();
+    this.commentSelection = function(element) {
+        var text = this.getSelectedText();
         if (typeof text == 'string') {
             var textLines = text.split(/\r\n|\r|\n/);
             var newText = '';
@@ -322,9 +322,9 @@ function MaiaEditor(container, language) {
                 for (var i = 0; i < textLines.length; i++) {
                     newText += '//' + textLines[i] + (i < textLines.length - 1 ? '\r\n' : '');
                 }
-                replaceSelectedText(newText);
+                this.replaceSelectedText(newText);
             }
-            highlightCode(element);
+            this.highlightCode(element);
         }
     }
 
@@ -333,8 +333,8 @@ function MaiaEditor(container, language) {
      * @param {string}  element - Element where the text will be uncommented.
      * @return          The selected text uncommented.
      */
-    function uncommentSelection(element) {
-        var text = getSelectedText();
+    this.uncommentSelection = function(element) {
+        var text = this.getSelectedText();
         if (typeof text == 'string') {
             var textLines = text.split(/\r\n|\r|\n/);
             var newText = '';
@@ -342,9 +342,9 @@ function MaiaEditor(container, language) {
                 for (var i = 0; i < textLines.length; i++) {
                     newText += textLines[i].replace('//', '') + (i < textLines.length - 1 ? '\r\n' : '');
                 }
-                replaceSelectedText(newText);
+                this.replaceSelectedText(newText);
             }
-            highlightCode(element);
+            this.highlightCode(element);
         }
     }
 
@@ -352,7 +352,7 @@ function MaiaEditor(container, language) {
      * Copy the selected text to clipboard.
      * @return  The selected text copied to clipboard.
      */
-    function copySelection() {
+    this.copySelection = function() {
         try {
             document.execCommand('copy')
         } catch (e) {
@@ -364,7 +364,7 @@ function MaiaEditor(container, language) {
      * Cut the selected text from clipboard.
      * @return  The selected text cuted from clipboard.
      */
-    function cutSelection() {
+    this.cutSelection = function() {
         try {
             document.execCommand('cut')
         } catch (e) {
@@ -376,7 +376,7 @@ function MaiaEditor(container, language) {
      * Past the selected text to clipboard.
      * @return  The selected text pasted to clipboard.
      */
-    function pastSelection() {
+    this.pastSelection = function() {
         try {
             document.execCommand('past')
         } catch (e) {
@@ -388,19 +388,19 @@ function MaiaEditor(container, language) {
     // in order to keep the syntax coloring consistent.
     editor.addEventListener('keydown', function(event) {
         if (((!event.shiftKey && event.ctrlKey) || (!event.shiftKey && event.metaKey)) && ((event.key == 'Z') || (event.key == 'z'))) {
-            restoreEditorContent(editor);
+            this.restoreEditorContent(editor);
         } else if (((event.shiftKey && event.ctrlKey) || (event.shiftKey && event.metaKey)) && ((event.key == 'Z') || (event.key == 'z'))) {
-            undoRestoreEditorContent(editor);
+            this.undoRestoreEditorContent(editor);
         } else if (((event.shiftKey && event.ctrlKey) || (event.shiftKey && event.metaKey)) && ((event.key == 'I') || (event.key == 'i'))) {
-            unindentSelection(editor);
+            this.unindentSelection(editor);
         } else if (((!event.shiftKey && event.ctrlKey) || (!event.shiftKey && event.metaKey)) && ((event.key == 'I') || (event.key == 'i'))) {
-            indentSelection(editor);
+            this.indentSelection(editor);
         } else if (((event.shiftKey && event.ctrlKey) || (!event.shiftKey && event.metaKey)) && ((event.key == 'M') || (event.key == 'm'))) {
-            uncommentSelection(editor);
+            this.uncommentSelection(editor);
         } else if (((!event.shiftKey && event.ctrlKey) || (!event.shiftKey && event.metaKey)) && ((event.key == 'M') || (event.key == 'm'))) {
-            commentSelection(editor);
+            this.commentSelection(editor);
         } else {
-            saveEditorContent(editor);
+            this.saveEditorContent(editor);
         }
     });
 
@@ -414,10 +414,10 @@ function MaiaEditor(container, language) {
             return;
         }
         // Highlights the code syntax in the editor.
-        highlightCode(editor);
+        this.highlightCode(editor);
     });
     // Transfer the text from the container to the editor.
     editor.textContent = code;
     // Highlights the code syntax in the editor.
-    highlightCode(editor);
+    this.highlightCode(editor);
 }
