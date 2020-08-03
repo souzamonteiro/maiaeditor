@@ -63,7 +63,9 @@ Or, get it from GitHub:
 Or, download the latest zipped version:
 
 `unzip maiaeditor-master.zip`
+
 `cd maiaeditor-master`
+
 `npm install -g .`
 
 To try MaiaEditor on-line go to http://www.maiastudio.com.br
