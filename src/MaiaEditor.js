@@ -34,6 +34,8 @@ function MaiaEditor(container, language) {
         // Class attributes goes here.
     }
     
+    var maiaeditor = this;
+    
     // History for undo and redo operations. 
     var editorHistory = [];
     var editorHistoryBackup = [];
@@ -104,7 +106,7 @@ function MaiaEditor(container, language) {
     /**
      * Gets the current position of the cursor.
      * @param {object}   element - Element where the cursor position will be obtained.
-     * @return {object}  The current position of the cursor.
+     * @return {number}  The current position of the cursor.
      */
     this.getCursorPosition = function(element) {
         var cursorOffset = 0;
@@ -162,29 +164,36 @@ function MaiaEditor(container, language) {
         }
         // Move cursor to specified offset.
         if (currentNode != null) {
-            if (offset <= range.endOffset) {
+            try {
                 range.setStart(currentNode, offset);
                 range.collapse(true);
                 sel.removeAllRanges();
                 sel.addRange(range);
+            } catch (e) {
+                console.log(e.message);
             }
         }
     }
 
     /**
      * Highlights the code syntax in the editor.
-     * @param {object}  element - Element to highlight code.
+     * @param {object}  element - Element to do code syntax highlighte.
      * @return          The content of the editor is Highlighted.
      */
     this.highlightCode = function(element) {
+        if (typeof element == 'undefined') {
+            var thisEditor = editor;
+        } else {
+            var thisEditor = element;
+        }
         // Gets the code in the editor.
-        var code = element.textContent || '';
+        var code = thisEditor.textContent || '';
         // Saves the cursor position.
-        var position = this.getCursorPosition(element);
+        var position = this.getCursorPosition(thisEditor);
         // Highlights the code syntax in the editor.
-        element.innerHTML = Prism.highlight(code, Prism.languages[language], language);
+        thisEditor.innerHTML = Prism.highlight(code, Prism.languages[language], language);
         // Restores the cursor position.
-        this.setCursorPosition(element, position);
+        this.setCursorPosition(thisEditor, position);
         // Displays line numbers.
         var numberOfLines = code.split(/\r\n|\r|\n/).length + (code.endsWith('\r') || code.endsWith('\n') ? 0 : 1);
         var text = '';
@@ -196,17 +205,24 @@ function MaiaEditor(container, language) {
 
     /**
      * Saves the current content of the editor.
-     * @param {object}  element - Element to save content.
+     * @param {object}  element - Element where to save content.
      * @return          The current content of the editor is saved.
      */
     this.saveEditorContent = function(element) {
+        if (typeof element == 'undefined') {
+            var element = editor;
+        }
         // Place the previous contents on the stack.
+        if (editorHistory.length >= 3) {
+            editorHistory.shift();
+            editorHistoryBackup.shift();
+        }
         editorHistory.push(element.textContent);
     }
 
     /**
      * Restores the editor's previous content.
-     * @param {object}  element - Element to restore content.
+     * @param {object}  element - Element where to restore content.
      * @return          The editor's previous content is restored.
      */
     this.restoreEditorContent = function(element) {
@@ -215,23 +231,26 @@ function MaiaEditor(container, language) {
         // Place the previous contents on the backup stack.
         editorHistoryBackup.push(lastContent);
         // Restores the content.
-        element.textContent = lastContent ? lastContent : element.textContent;
+        editor.textContent = lastContent ? lastContent : editor.textContent;
         // Highlights the code syntax in the editor.
         this.highlightCode(element);
     }
 
     /**
      * Undo previous restores command.
-     * @param {object}  element - Element to restore content.
+     * @param {object}  element - Element where to restore content.
      * @return          The editor's previous content is restored.
      */
     this.undoRestoreEditorContent = function(element) {
+        if (typeof element == 'undefined') {
+            var element = editor;
+        }
         // Removes the previous contents from the backup stack.
         var lastContent = editorHistoryBackup.pop();
         // Place the previous contents on the stack.
         editorHistory.push(lastContent);
         // Restores the content.
-        element.textContent = lastContent ? lastContent : element.textContent;
+        editor.textContent = lastContent ? lastContent : editor.textContent;
         // Highlights the code syntax in the editor.
         this.highlightCode(element);
     }
@@ -270,10 +289,13 @@ function MaiaEditor(container, language) {
 
     /**
      * Indents the selected text.
-     * @param {string}  element - Element where the text will be indented.
+     * @param {object}  element - Element where the selection is.
      * @return          The selected text indented.
      */
     this.indentSelection = function(element) {
+        if (typeof element == 'undefined') {
+            var element = editor;
+        }
         var text = this.getSelectedText();
         if (typeof text == 'string') {
             var textLines = text.split(/\r\n|\r|\n/);
@@ -290,10 +312,13 @@ function MaiaEditor(container, language) {
 
     /**
      * Unindents the selected text.
-     * @param {string}  element - Element where the text will be unindented.
+     * @param {object}  element - Element where the selection is.
      * @return          The selected text unindented.
      */
     this.unindentSelection = function(element) {
+        if (typeof element == 'undefined') {
+            var element = editor;
+        }
         var text = this.getSelectedText();
         if (typeof text == 'string') {
             var textLines = text.split(/\r\n|\r|\n/);
@@ -310,10 +335,13 @@ function MaiaEditor(container, language) {
 
     /**
      * Comments the selected text.
-     * @param {string}  element - Element where the text will be commented.
+     * @param {object}  element - Element where the selection is.
      * @return          The selected text commented.
      */
     this.commentSelection = function(element) {
+        if (typeof element == 'undefined') {
+            var element = editor;
+        }
         var text = this.getSelectedText();
         if (typeof text == 'string') {
             var textLines = text.split(/\r\n|\r|\n/);
@@ -330,10 +358,13 @@ function MaiaEditor(container, language) {
 
     /**
      * Uncomments the selected text.
-     * @param {string}  element - Element where the text will be uncommented.
+     * @param {object}  element - Element where the selection is.
      * @return          The selected text uncommented.
      */
     this.uncommentSelection = function(element) {
+        if (typeof element == 'undefined') {
+            var element = editor;
+        }
         var text = this.getSelectedText();
         if (typeof text == 'string') {
             var textLines = text.split(/\r\n|\r|\n/);
@@ -355,6 +386,7 @@ function MaiaEditor(container, language) {
     this.copySelection = function() {
         try {
             document.execCommand('copy')
+            this.highlightCode(editor);
         } catch (e) {
             alert('This browser does not support copy from JavaScript code.');
         }
@@ -367,18 +399,20 @@ function MaiaEditor(container, language) {
     this.cutSelection = function() {
         try {
             document.execCommand('cut')
+            this.highlightCode(editor);
         } catch (e) {
             alert('This browser does not support cut from JavaScript code.');
         }
     }
 
     /**
-     * Past the selected text to clipboard.
+     * Paste the selected text to clipboard.
      * @return  The selected text pasted to clipboard.
      */
-    this.pastSelection = function() {
+    this.pasteSelection = function() {
         try {
-            document.execCommand('past')
+            document.execCommand('paste')
+            this.highlightCode(editor);
         } catch (e) {
             alert('This browser does not support past from JavaScript code.');
         }
@@ -388,34 +422,34 @@ function MaiaEditor(container, language) {
     // in order to keep the syntax coloring consistent.
     editor.addEventListener('keydown', function(event) {
         if (((!event.shiftKey && event.ctrlKey) || (!event.shiftKey && event.metaKey)) && ((event.key == 'Z') || (event.key == 'z'))) {
-            this.restoreEditorContent(editor);
+            maiaeditor.restoreEditorContent(maiaeditor.editor);
         } else if (((event.shiftKey && event.ctrlKey) || (event.shiftKey && event.metaKey)) && ((event.key == 'Z') || (event.key == 'z'))) {
-            this.undoRestoreEditorContent(editor);
+            maiaeditor.undoRestoreEditorContent(maiaeditor.editor);
         } else if (((event.shiftKey && event.ctrlKey) || (event.shiftKey && event.metaKey)) && ((event.key == 'I') || (event.key == 'i'))) {
-            this.unindentSelection(editor);
+            maiaeditor.unindentSelection(maiaeditor.editor);
         } else if (((!event.shiftKey && event.ctrlKey) || (!event.shiftKey && event.metaKey)) && ((event.key == 'I') || (event.key == 'i'))) {
-            this.indentSelection(editor);
+            maiaeditor.indentSelection(maiaeditor.editor);
         } else if (((event.shiftKey && event.ctrlKey) || (!event.shiftKey && event.metaKey)) && ((event.key == 'M') || (event.key == 'm'))) {
-            this.uncommentSelection(editor);
+            maiaeditor.uncommentSelection(maiaeditor.editor);
         } else if (((!event.shiftKey && event.ctrlKey) || (!event.shiftKey && event.metaKey)) && ((event.key == 'M') || (event.key == 'm'))) {
-            this.commentSelection(editor);
+            maiaeditor.commentSelection(maiaeditor.editor);
         } else {
-            this.saveEditorContent(editor);
+            maiaeditor.saveEditorContent(maiaeditor.editor);
         }
-    });
+    }, false);
 
     // It is necessary to update the HTML content of the element, whenever a key is pressed,
     // in order to keep the syntax coloring consistent.
     editor.addEventListener('input', function(event) {
-        // if (event.defaultPrevented) {
-        //     return;
-        // }
+        if (event.defaultPrevented) {
+            return;
+        }
         if (event.isComposing) {
             return;
         }
         // Highlights the code syntax in the editor.
-        this.highlightCode(editor);
-    });
+        maiaeditor.highlightCode(maiaeditor.editor);
+    }, false);
     // Transfer the text from the container to the editor.
     editor.textContent = code;
     // Highlights the code syntax in the editor.
