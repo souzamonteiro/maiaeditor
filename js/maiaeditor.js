@@ -84,6 +84,23 @@ function MaiaEditor(container, language) {
     editor.style.textAlign = 'left';
 
     /**
+     * Gets the editor's text.
+     * @return {string}  The text in the editor.
+     */
+    function getText(text) {
+        return editor.textContent;
+    }
+
+    /**
+     * Sets the editor's text.
+     * @param {string}  text - Text to be set in the editor.
+     * @return          The text in the editor is set.
+     */
+    function setText(text) {
+        editor.textContent = text;
+    }
+    
+    /**
      * Gets the current position of the cursor.
      * @param {object}   element - Element where the cursor position will be obtained.
      * @return {object}  The current position of the cursor.
@@ -220,7 +237,7 @@ function MaiaEditor(container, language) {
 
     /**
      * Returns the selected text.
-     * @return  The selected text.
+     * @return {string}  The selected text.
      */
     function getSelectedText() {
         var res;
@@ -229,22 +246,6 @@ function MaiaEditor(container, language) {
         }
         return res;
     }
-
-    /**
-     * Removes specific characters from a text.
-     * @param {string}  text - Text to trim.
-     * @param {string}  character - Character to remove.
-     * @return          The selected text trimmed.
-     */
-    function trimText(text, character) {
-        if (character === ']') {
-            character = '\\]';
-        }
-        if (character === '\\') {
-            character = '\\\\';
-        }
-        return text.replace(new RegExp('^[' + character + ']+|[' + character + ']+$', 'g'), '');
-      }
 
     /**
      * Replaces the selected text with one provided as a parameter.
@@ -274,18 +275,14 @@ function MaiaEditor(container, language) {
     function indentSelection(element) {
         var text = getSelectedText();
         if (typeof text == 'string') {
-            // Saves the cursor position.
-            var position = getCursorPosition(element);
             var textLines = text.split(/\r\n|\r|\n/);
             var newText = '';
             if (Array.isArray(textLines)) {
                 for (var i = 0; i < textLines.length; i++) {
-                    newText += '    ' + trimText(trimText(textLines[i], '\n'), '\r') + '\r\n';
+                    newText += '    ' + textLines[i] + (i < textLines.length - 1 ? '\r\n' : '');
                 }
                 replaceSelectedText(newText);
             }
-            // Restores the cursor position.
-            setCursorPosition(element, position);
             highlightCode(element);
         }
     }
@@ -298,18 +295,14 @@ function MaiaEditor(container, language) {
     function unindentSelection(element) {
         var text = getSelectedText();
         if (typeof text == 'string') {
-            // Saves the cursor position.
-            var position = getCursorPosition(element);
             var textLines = text.split(/\r\n|\r|\n/);
             var newText = '';
             if (Array.isArray(textLines)) {
                 for (var i = 0; i < textLines.length; i++) {
-                    newText += trimText(trimText(textLines[i], '\n'), '\r').replace('    ', '') + '\r\n';
+                    newText += textLines[i].replace('    ', '') + (i < textLines.length - 1 ? '\r\n' : '');
                 }
                 replaceSelectedText(newText);
             }
-            // Restores the cursor position.
-            setCursorPosition(element, position);
             highlightCode(element);
         }
     }
@@ -322,18 +315,14 @@ function MaiaEditor(container, language) {
     function commentSelection(element) {
         var text = getSelectedText();
         if (typeof text == 'string') {
-            // Saves the cursor position.
-            var position = getCursorPosition(element);
             var textLines = text.split(/\r\n|\r|\n/);
             var newText = '';
             if (Array.isArray(textLines)) {
                 for (var i = 0; i < textLines.length; i++) {
-                    newText += '//' + trimText(trimText(textLines[i], '\n'), '\r') + '\r\n';
+                    newText += '//' + textLines[i] + (i < textLines.length - 1 ? '\r\n' : '');
                 }
                 replaceSelectedText(newText);
             }
-            // Restores the cursor position.
-            setCursorPosition(element, position);
             highlightCode(element);
         }
     }
@@ -346,19 +335,51 @@ function MaiaEditor(container, language) {
     function uncommentSelection(element) {
         var text = getSelectedText();
         if (typeof text == 'string') {
-            // Saves the cursor position.
-            var position = getCursorPosition(element);
             var textLines = text.split(/\r\n|\r|\n/);
             var newText = '';
             if (Array.isArray(textLines)) {
                 for (var i = 0; i < textLines.length; i++) {
-                    newText += trimText(trimText(trimText(textLines[i], '\n'), '\r'), '/') + '\r\n';
+                    newText += textLines[i].replace('//', '') + (i < textLines.length - 1 ? '\r\n' : '');
                 }
                 replaceSelectedText(newText);
             }
-            // Restores the cursor position.
-            setCursorPosition(element, position);
             highlightCode(element);
+        }
+    }
+
+    /**
+     * Copy the selected text to clipboard.
+     * @return  The selected text copied to clipboard.
+     */
+    function copySelection() {
+        try {
+            document.execCommand('copy')
+        } catch (e) {
+            alert('This browser does not support copy from JavaScript code.');
+        }
+    }
+
+    /**
+     * Cut the selected text from clipboard.
+     * @return  The selected text cuted from clipboard.
+     */
+    function cutSelection() {
+        try {
+            document.execCommand('cut')
+        } catch (e) {
+            alert('This browser does not support cut from JavaScript code.');
+        }
+    }
+
+    /**
+     * Past the selected text to clipboard.
+     * @return  The selected text pasted to clipboard.
+     */
+    function pastSelection() {
+        try {
+            document.execCommand('past')
+        } catch (e) {
+            alert('This browser does not support past from JavaScript code.');
         }
     }
 
