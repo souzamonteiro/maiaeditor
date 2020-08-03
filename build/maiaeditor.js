@@ -98,6 +98,7 @@ function MaiaEditor(container, language) {
      */
     function setText(text) {
         editor.textContent = text;
+        highlightCode(editor);
     }
     
     /**
