@@ -1,14 +1,13 @@
 # MaiaEditor (The MaiaStudio Editor)
 
-*Copyright (C) 2020 Roberto Luiz Souza Monteiro,*
-                    *Renata Souza Barreto,*
-                    *Hernane Borges de Barros Pereira.*
+Copyright (C) 2020 Roberto Luiz Souza Monteiro, Renata Souza Barreto, Hernane Borges de Barros Pereira.
 
 This software is distributed under the terms of several open sources licenses.
 
 Please read the files LICENSE, COPYING or COPYING.LIB for further information.
 
-MaiaEditor is a lightweight and versatile web editor. The only dependency is a Prism library, for syntax highlight.
+MaiaEditor is a lightweight and versatile web editor.
+The only dependency is the Prism library, for syntax highlight.
 
 MaiaScript is a programming language aimed at developing adaptable and
 intelligent applications. An adaptive application modifies its code to
@@ -28,12 +27,11 @@ abstraction layer between the MaiaScript interpreter and the underlying Operatin
 
 The complete documentation, including the EBNF grammar file and the compiler's
 syntax diagrams (railroad diagrams) can be found in the grammar directory.
-For more information send mail to: support@maiascript.com
+For more information send mail to: [mailto:support@maiascript.com](mailto:support@maiascript.com)
 
-You can get the last MaiaStudio version at
-http://www.maiascript.com
+You can get the last MaiaStudio version at [http://www.maiascript.com](http://www.maiascript.com)
 
-**INSTRUCTIONS FOR USE:**
+## INSTRUCTIONS FOR USE:
 
 Load the MaiaEditor library:
 
@@ -48,9 +46,12 @@ Then initialize the div using the MaiaEditor class constructor:
 
 `<script>var editor = new MaiaEditor('editor', 'javascript');</script>`
 
+The complete documentation of the MaiaEditor class methods
+can be found in the doc folder.
+
 Thats all!
 
-**INSTALL:**
+## INSTALL:
 
 To install the MaiaEditor use the command:
 
@@ -68,7 +69,7 @@ Or, download the latest zipped version:
 
 `npm install -g .`
 
-To try MaiaEditor on-line go to http://www.maiastudio.com.br
+To try MaiaEditor on-line go to [http://www.maiastudio.com.br](http://www.maiastudio.com.br)
 
 Lauro de Freitas, August 2020.
 
