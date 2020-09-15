@@ -1,3 +1,1 @@
-- [x] Fix Undo and Redo for Cut and Paste
-- [x] Implement the regSub method
-- [x] Implement search method
+- [x] Fix press [ENTER] in Google Chrome
